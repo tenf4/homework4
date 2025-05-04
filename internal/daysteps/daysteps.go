@@ -3,11 +3,12 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
+	"github.com/Yandex-Practicum/go1fl-4-sprint-final/internal/spentcalories"
 )
 
 const (
@@ -45,13 +46,15 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		fmt.Printf("Ошибка парсинга: %s", err)
-	}
-	if steps <= 0 {
+		log.Printf("Ошибка парсинга: %s", err)
 		return ""
 	}
-	distanceM := float64(steps) * stepLength
-	distanceKm := distanceM / mInKm
+	if steps < 1 {
+		log.Print(errors.New("Некорректное количество шагов"))
+		return ""
+	}
+	distanceKm := float64(stepLength) * float64(steps) / 1000
 	spentCalories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
-	return fmt.Sprintf("Количество шагов: %d\nДистанция составила %f км.\nВы сожгли %f ккал.", steps, distanceKm, spentCalories)
+	return fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, distanceKm, spentCalories)
+
 }
