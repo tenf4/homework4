@@ -1,6 +1,7 @@
 module github.com/Yandex-Practicum/go1fl-4-sprint-final
 
 go 1.24.1
+
 require github.com/stretchr/testify v1.10.0
 
 require (
